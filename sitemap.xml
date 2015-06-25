@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://jatin3893.github.io/</loc>
+    <lastmod>2015-06-24T20:36:57+05:30</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://jatin3893.github.io/CV/ChannelSeparation/</loc>
+    <lastmod>2015-06-24T20:36:57+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jatin3893.github.io/Audio/FileRead/</loc>
+    <lastmod>2015-06-17T20:02:17+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jatin3893.github.io/CG/CGHello/</loc>
+    <lastmod>2015-06-07T22:28:42+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jatin3893.github.io/Abhigyaan/HelloAbhigyaan/</loc>
+    <lastmod>2015-06-07T22:21:25+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jatin3893.github.io/about/</loc>
+    <lastmod>2014-05-31T11:17:48+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jatin3893.github.io/CV/CVHello/</loc>
+    <lastmod>2015-06-07T22:21:42+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jatin3893.github.io/CV/ColourTracking/</loc>
+    <lastmod>2015-06-13T00:35:28+05:30</lastmod>
+  </url>
+  
+</urlset>

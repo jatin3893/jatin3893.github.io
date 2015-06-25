@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Webaudioapi on PJ&#39;s Pages</title>
+    <link>http://jatin3893.github.io/tags/webaudioapi/</link>
+    <description>Recent content in Webaudioapi on PJ&#39;s Pages</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 17 Jun 2015 20:02:17 +0530</lastBuildDate>
+    <atom:link href="http://jatin3893.github.io/tags/webaudioapi/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Simple Audio Player</title>
+      <link>http://jatin3893.github.io/Audio/FileRead/</link>
+      <pubDate>Wed, 17 Jun 2015 20:02:17 +0530</pubDate>
+      
+      <guid>http://jatin3893.github.io/Audio/FileRead/</guid>
+      <description>&lt;div class=&#34;play icons&#34;&gt;
+    &lt;img src = &#39;/myIcons/play.png&#39;&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;stop icons&#34;&gt;
+    &lt;img src = &#39;/myIcons/pause.png&#39;&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;style type=&#34;text/css&#34;&gt;
+    .icons {
+        display: inline-block;
+        height: 100px;
+        width: 100px;
+    }
+&lt;/style&gt;&lt;/p&gt;
+
+&lt;script type=&#34;text/javascript&#34;&gt;
+    var context, soundSource, soundBuffer, url = &#39;http://jatin3893.github.io/myAudio/alarm.wav&#39;;
+    
+    function init() {
+        if (typeof AudioContext !== &#34;undefined&#34;) {
+            context = new AudioContext();
+        } else if (typeof webkitAudioContext !== &#34;undefined&#34;) {
+            context = new webkitAudioContext();
+        } else {
+            throw new Error(&#39;Audio Context not supported. :(&#39;);
+        }
+    }
+    
+    function startSound() {
+        // Note: this loads asynchronously
+        var request = new XMLHttpRequest();
+        request.open(&#34;GET&#34;, url, true);
+        request.responseType = &#34;arraybuffer&#34;;
+
+        // Our asynchronous callback
+        request.onload = function() {
+            var audioData = request.response;
+
+            audioGraph(audioData);
+        };
+        request.send();
+    }
+
+    // Finally: tell the source when to start
+    function playSound() {
+        // play the source now
+        soundSource.start(context.currentTime);
+    }
+
+    function stopSound() {
+        // stop the source now
+        soundSource.stop(context.currentTime);
+    }
+    
+    // Events for the play/stop bottons
+    document.querySelector(&#39;.play&#39;).addEventListener(&#39;click&#39;, startSound);
+    document.querySelector(&#39;.stop&#39;).addEventListener(&#39;click&#39;, stopSound);
+    
+    // This is the code we are interested in:
+    function audioGraph(audioData) {
+        soundSource = context.createBufferSource();
+        context.decodeAudioData(audioData, function(soundBuffer){
+            soundSource.buffer = soundBuffer;
+    
+            volumeNode = context.createGain();
+    
+            //Set the volume
+            volumeNode.gain.value = 2.0;
+    
+            // Wiring
+            soundSource.connect(volumeNode);
+            volumeNode.connect(context.destination);
+    
+            // Finally
+            playSound(soundSource);
+        });
+    }
+
+    init();
+&lt;/script&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
