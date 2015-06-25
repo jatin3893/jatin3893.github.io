@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PJ&#39;s Pages</title>
+    <link>http://jatin3893.github.io/</link>
+    <description>Recent content on PJ&#39;s Pages</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 24 Jun 2015 20:36:57 +0530</lastBuildDate>
+    <atom:link href="http://jatin3893.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Extract RGB Channels</title>
+      <link>http://jatin3893.github.io/CV/ChannelSeparation/</link>
+      <pubDate>Wed, 24 Jun 2015 20:36:57 +0530</pubDate>
+      
+      <guid>http://jatin3893.github.io/CV/ChannelSeparation/</guid>
+      <description>&lt;script src=&#34;http://jatin3893.github.io/scripts/cv/tracking-min.js&#34;&gt;&lt;/script&gt;
+&lt;video id=&#34;myVideo&#34; width=&#34;200&#34; height=&#34;150&#34; preload autoplay loop muted&gt;&lt;/video&gt;&lt;br&gt;
+&lt;canvas id=&#34;channelR&#34; class = &#34;outputchannel&#34; width=&#34;200&#34; height=&#34;150&#34;&gt;&lt;/canvas&gt;
+&lt;canvas id=&#34;channelG&#34; class = &#34;outputchannel&#34; width=&#34;200&#34; height=&#34;150&#34;&gt;&lt;/canvas&gt;
+&lt;canvas id=&#34;channelB&#34; class = &#34;outputchannel&#34; width=&#34;200&#34; height=&#34;150&#34;&gt;&lt;/canvas&gt;
+
+&lt;script&gt;
+    canvasR = document.getElementById(&#39;channelR&#39;);
+    canvasG = document.getElementById(&#39;channelG&#39;);
+    canvasB = document.getElementById(&#39;channelB&#39;);
+
+    contextR = canvasR.getContext(&#39;2d&#39;);
+    contextG = canvasG.getContext(&#39;2d&#39;);
+    contextB = canvasB.getContext(&#39;2d&#39;);
+
+    imageDataR = contextR.createImageData(canvasR.width, canvasR.height);
+    imageDataG = contextG.createImageData(canvasG.width, canvasG.height);
+    imageDataB = contextB.createImageData(canvasB.width, canvasB.height);
+
+    tracking.MyTracker = function() {
+        tracking.MyTracker.base(this, &#39;constructor&#39;);
+    }
+    tracking.inherits(tracking.MyTracker, tracking.Tracker);
+
+    tracking.MyTracker.prototype.track = function(pixels, width, height) {
+        // Your tracking logic here
+        pixelsRed = new Uint8Array(pixels.length);
+        pixelsGreen = new Uint8Array(pixels.length);
+        pixelsBlue = new Uint8Array(pixels.length);
+
+        height = canvasR.height
+        width = canvasR.width
+        for (i = 0; i &lt; width; i++) {
+            for (j = 0; j &lt; height; j++) {
+                index = (i + j * width) * 4;
+                pixelsRed[index + 0] = pixels[index + 0];
+                pixelsGreen[index + 1] = pixels[index + 1];
+                pixelsBlue[index + 2] = pixels[index + 2];
+            }
+        }
+
+        this.emit(&#39;track&#39;, {
+            channel: {
+                red: pixelsRed,
+                green: pixelsGreen,
+                blue: pixelsBlue
+            }
+        });
+    }
+
+    var myTracker = new tracking.MyTracker()
+    myTracker.on(&#39;track&#39;, function(event) {
+        height = canvasR.height
+        width = canvasR.width
+        for (i = 0; i &lt; width; i++){
+            for (j = 0; j &lt; height; j++) {
+                index = (i + j * width) * 4;
+                imageDataR.data[index + 0] = event.channel.red[index + 0];
+                imageDataG.data[index + 1] = event.channel.green[index + 1];
+                imageDataB.data[index + 2] = event.channel.blue[index + 2];
+
+                imageDataR.data[index + 3] = 255;
+                imageDataG.data[index + 3] = 255;
+                imageDataB.data[index + 3] = 255;
+
+            }
+        }
+        contextR.putImageData(imageDataR, 0, 0);
+        contextG.putImageData(imageDataG, 0, 0);
+        contextB.putImageData(imageDataB, 0, 0);
+
+    })
+    window.onload = function() {
+        // note here that &#39;camera&#39; is set to true, I believe this tells tracking.js to use
+        // the webcam.
+        tracking.track(&#39;#myVideo&#39;, myTracker, {
+            camera: true
+        });
+  }
+&lt;/script&gt;
+
+&lt;p&gt;&lt;style type=&#34;text/css&#34;&gt;
+    .outputchannel {
+        display: inline-block;
+    }
+&lt;/style&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Simple Audio Player</title>
+      <link>http://jatin3893.github.io/Audio/FileRead/</link>
+      <pubDate>Wed, 17 Jun 2015 20:02:17 +0530</pubDate>
+      
+      <guid>http://jatin3893.github.io/Audio/FileRead/</guid>
+      <description>&lt;div class=&#34;play icons&#34;&gt;
+    &lt;img src = &#39;/myIcons/play.png&#39;&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;stop icons&#34;&gt;
+    &lt;img src = &#39;/myIcons/pause.png&#39;&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;style type=&#34;text/css&#34;&gt;
+    .icons {
+        display: inline-block;
+        height: 100px;
+        width: 100px;
+    }
+&lt;/style&gt;&lt;/p&gt;
+
+&lt;script type=&#34;text/javascript&#34;&gt;
+    var context, soundSource, soundBuffer, url = &#39;http://jatin3893.github.io/myAudio/alarm.wav&#39;;
+    
+    function init() {
+        if (typeof AudioContext !== &#34;undefined&#34;) {
+            context = new AudioContext();
+        } else if (typeof webkitAudioContext !== &#34;undefined&#34;) {
+            context = new webkitAudioContext();
+        } else {
+            throw new Error(&#39;Audio Context not supported. :(&#39;);
+        }
+    }
+    
+    function startSound() {
+        // Note: this loads asynchronously
+        var request = new XMLHttpRequest();
+        request.open(&#34;GET&#34;, url, true);
+        request.responseType = &#34;arraybuffer&#34;;
+
+        // Our asynchronous callback
+        request.onload = function() {
+            var audioData = request.response;
+
+            audioGraph(audioData);
+        };
+        request.send();
+    }
+
+    // Finally: tell the source when to start
+    function playSound() {
+        // play the source now
+        soundSource.start(context.currentTime);
+    }
+
+    function stopSound() {
+        // stop the source now
+        soundSource.stop(context.currentTime);
+    }
+    
+    // Events for the play/stop bottons
+    document.querySelector(&#39;.play&#39;).addEventListener(&#39;click&#39;, startSound);
+    document.querySelector(&#39;.stop&#39;).addEventListener(&#39;click&#39;, stopSound);
+    
+    // This is the code we are interested in:
+    function audioGraph(audioData) {
+        soundSource = context.createBufferSource();
+        context.decodeAudioData(audioData, function(soundBuffer){
+            soundSource.buffer = soundBuffer;
+    
+            volumeNode = context.createGain();
+    
+            //Set the volume
+            volumeNode.gain.value = 2.0;
+    
+            // Wiring
+            soundSource.connect(volumeNode);
+            volumeNode.connect(context.destination);
+    
+            // Finally
+            playSound(soundSource);
+        });
+    }
+
+    init();
+&lt;/script&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>CG Hello World</title>
+      <link>http://jatin3893.github.io/CG/CGHello/</link>
+      <pubDate>Sun, 07 Jun 2015 22:28:42 +0530</pubDate>
+      
+      <guid>http://jatin3893.github.io/CG/CGHello/</guid>
+      <description>&lt;p&gt;Computer Graphics Hello World&lt;/p&gt;
+
+&lt;canvas id = &#34;triangle_canvas&#34; width = &#34;500&#34; height = &#34;500&#34;&gt;&lt;/canvas&gt;
+
+&lt;script type=&#34;text/javascript&#34; src = &#34;/scripts/cg/gl-matrix-min.js&#34;&gt;&lt;/script&gt;
+
+&lt;script id=&#34;fshader&#34; type=&#34;x-shader/x-fragment&#34;&gt;
+    precision mediump float;
+
+    void main(void) {
+        gl_FragColor = vec4(0.1, 0.2, 0.3, 0.4);
+    }
+&lt;/script&gt;
+
+&lt;script id=&#34;vshader&#34; type=&#34;x-shader/x-vertex&#34;&gt;
+    attribute vec3 aVertexPosition;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    }
+&lt;/script&gt;
+&lt;script type=&#34;text/javascript&#34;&gt;
+    var gl;
+    var shaderProgram;
+    
+    var mvMatrix = mat4.create();
+    var pMatrix = mat4.create();
+    
+    var triangleVertexPositionBuffer;
+
+    function webGLStart() {
+        var canvas = document.getElementById(&#34;triangle_canvas&#34;);
+        initGL(canvas);
+        initShaders();
+        initBuffers();
+
+        gl.clearColor(0.5, 0.5, 0.5, 1);
+        gl.enable(gl.DEPTH_TEST);
+
+        drawScene();
+    }
+
+    function initShaders() {
+        var fragmentShader = getShader(gl, &#34;fshader&#34;);
+        var vertexShader = getShader(gl, &#34;vshader&#34;);
+
+        shaderProgram = gl.createProgram();
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        gl.linkProgram(shaderProgram);
+
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+            alert(&#34;Could not initialise shaders&#34;);
+        }
+
+        gl.useProgram(shaderProgram);
+
+        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, &#34;aVertexPosition&#34;);
+        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, &#34;uPMatrix&#34;);
+        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, &#34;uMVMatrix&#34;);
+    }
+
+    function getShader(gl, id) {
+        var shaderScript = document.getElementById(id);
+        if (!shaderScript) {
+            return null;
+        }
+
+        var str = &#34;&#34;;
+        var k = shaderScript.firstChild;
+        while (k) {
+            if (k.nodeType == 3) {
+                str += k.textContent;
+            }
+            k = k.nextSibling;
+        }
+
+        var shader;
+        if (shaderScript.type == &#34;x-shader/x-fragment&#34;) {
+            shader = gl.createShader(gl.FRAGMENT_SHADER);
+        } else if (shaderScript.type == &#34;x-shader/x-vertex&#34;) {
+            shader = gl.createShader(gl.VERTEX_SHADER);
+        } else {
+            return null;
+        }
+
+        gl.shaderSource(shader, str);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            alert(gl.getShaderInfoLog(shader));
+            return null;
+        }
+
+        return shader;
+    }
+
+    function initBuffers() {
+        triangleVertexPositionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
+        var vertices = [
+             0.0,  1.0,  0.0,
+            -1.0, -1.0,  0.0,
+             1.0, -1.0,  0.0
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        triangleVertexPositionBuffer.itemSize = 3;
+        triangleVertexPositionBuffer.numItems = 3;
+    }
+    
+    function setMatrixUniforms() {
+        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+    }
+
+    function drawScene() {
+        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+
+        mat4.identity(mvMatrix);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        setMatrixUniforms();
+        gl.drawArrays(gl.TRIANGLES, 0, triangleVertexPositionBuffer.numItems);      
+    }
+    function initGL(canvas) {
+        try {
+            gl = canvas.getContext(&#34;experimental-webgl&#34;);
+            gl.viewportHeight = canvas.height;
+            gl.viewportWidth = canvas.width;
+        } catch(e) {
+            console.log(&#34;Exception!&#34;);
+            console.log(e);
+        }
+        if (!gl) {
+            console.log(&#34;GL Initialisation failed.&#34;);
+        }
+    }
+
+    webGLStart();
+&lt;/script&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>About Abhigyaan</title>
+      <link>http://jatin3893.github.io/Abhigyaan/HelloAbhigyaan/</link>
+      <pubDate>Sun, 07 Jun 2015 22:21:25 +0530</pubDate>
+      
+      <guid>http://jatin3893.github.io/Abhigyaan/HelloAbhigyaan/</guid>
+      <description>&lt;p&gt;Abhigyaan BITS Pilani Goa Campus from 2011 to 2015&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>About me</title>
+      <link>http://jatin3893.github.io/about/</link>
+      <pubDate>Sat, 31 May 2014 11:17:48 +0530</pubDate>
+      
+      <guid>http://jatin3893.github.io/about/</guid>
+      <description>
+
+&lt;h2 id=&#34;starting-with-who-i-am:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;Starting with who I am:&lt;/h2&gt;
+
+&lt;p&gt;My name is Jatin Parekh. I am currently in pursuit of my 4th Year Computer Science undergraduate degree from Birla Institute of Technology and Science, Pilani, K.K. Birla Goa Campus (a.k.a BITS Goa :D ).&lt;/p&gt;
+
+&lt;h2 id=&#34;so-what-do-i-do:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;So what do I do?&lt;/h2&gt;
+
+&lt;p&gt;Apart from appearing for college exams and attending lectures, I like working with Computer Graphics. I work with OpenGL as well as 3D Modelling softwares like Maya, 3DS Max or Blender. I also have a little experience in Computer Vision using OpenCV.&lt;/p&gt;
+
+&lt;p&gt;Currently, I am an R&amp;amp;D intern at DreamWorks Animation in India, which is more commonly known as DreamWorks Dedicated Unit (DDU). Over here, I have been working on their proprietary and other tools like AngularJS, Twitter Bootstrap, D3 and Tornado to create a web application for the developers at DDU.&lt;/p&gt;
+
+&lt;p&gt;I love working with C and C++. I have also used Qt for GUI based C++ applications and though I have no experience in Python, I have recently started using PyQt for a small application. I have also participated in Google Summer of Code 2014 as a student for The Visualization Toolkit.&lt;/p&gt;
+
+&lt;p&gt;Apart from this, I am an active member at Abhigyaan which is a group of students of BITS-Pilani, Goa Campus who work towards teaching the uneducated on-campus staff like mess workers, security guards and their children. I really enjoy teaching, be it my students at Abhigyaan or my classmates or juniors.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-am-i-doing-here:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;What am I doing here?&lt;/h2&gt;
+
+&lt;p&gt;Apart from keeping an account of activities that I do so that it can be utilized by other people who are trying to do something similar, I use this place as a platform to share my experiences as an Abhigyaan member and a Computers and Programming enthusiast.&lt;/p&gt;
+
+&lt;h2 id=&#34;how-is-this-useful-for-you:6083a88ee3411b0d17ce02d738f69d47&#34;&gt;How is this useful for you?&lt;/h2&gt;
+
+&lt;p&gt;Well, you are here. So, it definitely means you are looking for something. If it is already here and you’ve found it useful, then please do let me know! If it is not, then do take some time out and tell me about it. I might just get a chance to explore something new, because of you.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>CV Hello World</title>
+      <link>http://jatin3893.github.io/CV/CVHello/</link>
+      <pubDate>Sun, 07 Jun 2015 22:21:42 +0530</pubDate>
+      
+      <guid>http://jatin3893.github.io/CV/CVHello/</guid>
+      <description>&lt;p&gt;Computer Vision Hello World.
+My first post on how to access your webcam from JS using &lt;a href=&#34;http://trackingjs.com/&#34;&gt;tracking.js&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Tracking.js is a Java script based Open Source Computer Vision library
+I have just started using it. So I don&amp;rsquo;t know much about its pros or cons, but it sure looks good enough to try once.&lt;/p&gt;
+
+&lt;p&gt;Here is a small example which is a little beyond the scope of a Hello World. You can find the [hello world examples here]()&lt;/p&gt;
+
+&lt;p&gt;Here, I explain the basics of how to track something (color, object etc.) based on your own logic implemented in your own custom trackers implemented over the framework designed in tracking.js&lt;/p&gt;
+
+&lt;script src=&#34;http://jatin3893.github.io/scripts/cv/tracking-min.js&#34;&gt;&lt;/script&gt;
+&lt;video id=&#34;myVideo&#34; width=&#34;400&#34; height=&#34;300&#34; preload autoplay loop muted&gt;&lt;/video&gt;
+&lt;script&gt;
+    tracking.MyTracker = function() {
+        tracking.MyTracker.base(this, &#39;constructor&#39;);
+    }
+    tracking.inherits(tracking.MyTracker, tracking.Tracker);
+
+    tracking.MyTracker.prototype.track = function(pixels, width, height) {
+        // Do the processing as required
+        console.log(pixels.length);
+        
+        this.emit(&#39;track&#39;, {
+            data: &#39;Some Data&#39;
+        });
+    }
+
+    var myTracker = new tracking.MyTracker()
+    myTracker.on(&#39;track&#39;, function(event) {
+        // What to do on obtaining track
+    })
+
+    window.onload = function() {
+        tracking.track(&#39;#myVideo&#39;, myTracker, {
+            camera: true
+        });
+  }
+&lt;/script&gt; 
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;span class=&#34;c&#34;&gt;&amp;lt;!-- Import tracking.js library from its appropriate path --&amp;gt;&lt;/span&gt;
+&lt;span class=&#34;nt&#34;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&#34;na&#34;&gt;src=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;quot;/scripts/cv/tracking-min.js&amp;quot;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;&amp;gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;&amp;lt;!-- Display the captured frames in the specified height/width --&amp;gt;&lt;/span&gt;
+&lt;span class=&#34;nt&#34;&gt;&amp;lt;video&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;id=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;quot;myVideo&amp;quot;&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;width=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;quot;400&amp;quot;&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;height=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;quot;300&amp;quot;&lt;/span&gt; 
+            &lt;span class=&#34;na&#34;&gt;preload&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;autoplay&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;loop&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;muted&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;&amp;gt;&amp;lt;/video&amp;gt;&lt;/span&gt;
+
+&lt;span class=&#34;nt&#34;&gt;&amp;lt;script&amp;gt;&lt;/span&gt;
+    &lt;span class=&#34;c1&#34;&gt;// Implementing the custom tracker known as MyTracker&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;tracking&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;MyTracker&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;nx&#34;&gt;tracking&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;MyTracker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;base&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;constructor&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;tracking&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;inherits&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;tracking&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;MyTracker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;tracking&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Tracker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+
+    &lt;span class=&#34;c1&#34;&gt;// Override the track function of the tracker and &lt;/span&gt;
+    &lt;span class=&#34;c1&#34;&gt;// implement your own logic inside here.&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;tracking&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;MyTracker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;prototype&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;track&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; 
+        &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;pixels&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;width&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;height&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;// Your tracking logic here&lt;/span&gt;
+
+        &lt;span class=&#34;c1&#34;&gt;// Emit the generated result as a JSON object&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;this&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;emit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;output&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;nx&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;Some result&amp;quot;&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+    &lt;span class=&#34;c1&#34;&gt;// Initialise a tracker object&lt;/span&gt;
+    &lt;span class=&#34;kd&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;myTracker&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;tracking&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;MyTracker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
+
+    &lt;span class=&#34;c1&#34;&gt;// Specify what is to be done on the signal&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;myTracker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;on&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;output&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;})&lt;/span&gt;
+
+    &lt;span class=&#34;c1&#34;&gt;// Start tracking using the custom tracker object&lt;/span&gt;
+    &lt;span class=&#34;nb&#34;&gt;window&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;onload&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;nx&#34;&gt;tracking&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;track&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;#myVideo&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;myTracker&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;nx&#34;&gt;camera&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; 
+&lt;span class=&#34;nt&#34;&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Colour Tracking</title>
+      <link>http://jatin3893.github.io/CV/ColourTracking/</link>
+      <pubDate>Sat, 13 Jun 2015 00:35:28 +0530</pubDate>
+      
+      <guid>http://jatin3893.github.io/CV/ColourTracking/</guid>
+      <description>&lt;p&gt;A small example to track single colour in an Image.&lt;/p&gt;
+
+&lt;script src=&#34;http://jatin3893.github.io/scripts/cv/tracking-min.js&#34;&gt;&lt;/script&gt;
+&lt;video id=&#34;myVideo&#34; width=&#34;200&#34; height=&#34;150&#34; preload autoplay loop muted&gt;&lt;/video&gt;&lt;br&gt;
+&lt;canvas id=&#34;trackingOutput&#34; class = &#34;outputchannel&#34; width=&#34;200&#34; height=&#34;150&#34; style = &#34;border:1px solid #000000&#34;&gt;&lt;/canvas&gt;
+
+&lt;script&gt;
+    outputCanvas = document.getElementById(&#39;trackingOutput&#39;);
+    outputContext = outputCanvas.getContext(&#39;2d&#39;);
+    outputImageData = outputContext.createImageData(outputCanvas.width, outputCanvas.height);
+    
+    trackColor = [120, 120, 120];
+    inRange = function(color1, color2) {
+        delta = 10;
+        diff = color1 &gt; color2 ? color1 - color2 : color2 - color1;
+        return diff &lt;= delta;
+    }
+    
+    tracking.MyTracker = function() {
+        tracking.MyTracker.base(this, &#39;constructor&#39;);
+    }
+    tracking.inherits(tracking.MyTracker, tracking.Tracker);
+
+    tracking.MyTracker.prototype.track = function(pixels, width, height) {
+        // Your tracking logic here
+        trackedImageData = new Uint8Array(pixels.length);
+
+        height = outputCanvas.height
+        width = outputCanvas.width
+        for (i = 0; i &lt; width; i++) {
+            for (j = 0; j &lt; height; j++) {
+                index = (i + j * width) * 4;
+                if (inRange(pixels[index + 0], trackColor[0]) &amp;&amp; 
+                        inRange(pixels[index + 1], trackColor[1]) &amp;&amp; 
+                            inRange(pixels[index + 2], trackColor[2])) {
+                    trackedImageData[index + 0] = 255;
+                    trackedImageData[index + 1] = 255;
+                    trackedImageData[index + 2] = 255;
+                }
+                trackedImageData[index + 3] = pixels[index + 3];
+            }
+        }
+
+        this.emit(&#39;track&#39;, {
+            output: trackedImageData,
+        });
+    }
+
+    var myTracker = new tracking.MyTracker()
+    myTracker.on(&#39;track&#39;, function(event) {
+        height = outputCanvas.height
+        width = outputCanvas.width
+        for (i = 0; i &lt; width; i++){
+            for (j = 0; j &lt; height; j++) {
+                index = (i + j * width) * 4;
+                outputImageData.data[index + 0] = event.output[index + 0];
+                outputImageData.data[index + 1] = event.output[index + 1];
+                outputImageData.data[index + 2] = event.output[index + 2];
+                outputImageData.data[index + 3] = event.output[index + 3];
+            }
+        }
+        outputContext.putImageData(outputImageData, 0, 0);
+
+    })
+    window.onload = function() {
+        // note here that &#39;camera&#39; is set to true, I believe this tells tracking.js to use
+        // the webcam.
+        tracking.track(&#39;#myVideo&#39;, myTracker, {
+            camera: true
+        });
+  }
+&lt;/script&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
