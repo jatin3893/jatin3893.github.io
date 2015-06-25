@@ -5,103 +5,8 @@
     <link>http://jatin3893.github.io/cv/</link>
     <description>Recent content in Cvs on PJ&#39;s Pages</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Wed, 24 Jun 2015 20:36:57 +0530</lastBuildDate>
+    <lastBuildDate>Sun, 07 Jun 2015 22:21:42 +0530</lastBuildDate>
     <atom:link href="http://jatin3893.github.io/cv/index.xml" rel="self" type="application/rss+xml" />
-    
-    <item>
-      <title>Extract RGB Channels</title>
-      <link>http://jatin3893.github.io/CV/ChannelSeparation/</link>
-      <pubDate>Wed, 24 Jun 2015 20:36:57 +0530</pubDate>
-      
-      <guid>http://jatin3893.github.io/CV/ChannelSeparation/</guid>
-      <description>&lt;script src=&#34;http://jatin3893.github.io/scripts/cv/tracking-min.js&#34;&gt;&lt;/script&gt;
-&lt;video id=&#34;myVideo&#34; width=&#34;200&#34; height=&#34;150&#34; preload autoplay loop muted&gt;&lt;/video&gt;&lt;br&gt;
-&lt;canvas id=&#34;channelR&#34; class = &#34;outputchannel&#34; width=&#34;200&#34; height=&#34;150&#34;&gt;&lt;/canvas&gt;
-&lt;canvas id=&#34;channelG&#34; class = &#34;outputchannel&#34; width=&#34;200&#34; height=&#34;150&#34;&gt;&lt;/canvas&gt;
-&lt;canvas id=&#34;channelB&#34; class = &#34;outputchannel&#34; width=&#34;200&#34; height=&#34;150&#34;&gt;&lt;/canvas&gt;
-
-&lt;script&gt;
-    canvasR = document.getElementById(&#39;channelR&#39;);
-    canvasG = document.getElementById(&#39;channelG&#39;);
-    canvasB = document.getElementById(&#39;channelB&#39;);
-
-    contextR = canvasR.getContext(&#39;2d&#39;);
-    contextG = canvasG.getContext(&#39;2d&#39;);
-    contextB = canvasB.getContext(&#39;2d&#39;);
-
-    imageDataR = contextR.createImageData(canvasR.width, canvasR.height);
-    imageDataG = contextG.createImageData(canvasG.width, canvasG.height);
-    imageDataB = contextB.createImageData(canvasB.width, canvasB.height);
-
-    tracking.MyTracker = function() {
-        tracking.MyTracker.base(this, &#39;constructor&#39;);
-    }
-    tracking.inherits(tracking.MyTracker, tracking.Tracker);
-
-    tracking.MyTracker.prototype.track = function(pixels, width, height) {
-        // Your tracking logic here
-        pixelsRed = new Uint8Array(pixels.length);
-        pixelsGreen = new Uint8Array(pixels.length);
-        pixelsBlue = new Uint8Array(pixels.length);
-
-        height = canvasR.height
-        width = canvasR.width
-        for (i = 0; i &lt; width; i++) {
-            for (j = 0; j &lt; height; j++) {
-                index = (i + j * width) * 4;
-                pixelsRed[index + 0] = pixels[index + 0];
-                pixelsGreen[index + 1] = pixels[index + 1];
-                pixelsBlue[index + 2] = pixels[index + 2];
-            }
-        }
-
-        this.emit(&#39;track&#39;, {
-            channel: {
-                red: pixelsRed,
-                green: pixelsGreen,
-                blue: pixelsBlue
-            }
-        });
-    }
-
-    var myTracker = new tracking.MyTracker()
-    myTracker.on(&#39;track&#39;, function(event) {
-        height = canvasR.height
-        width = canvasR.width
-        for (i = 0; i &lt; width; i++){
-            for (j = 0; j &lt; height; j++) {
-                index = (i + j * width) * 4;
-                imageDataR.data[index + 0] = event.channel.red[index + 0];
-                imageDataG.data[index + 1] = event.channel.green[index + 1];
-                imageDataB.data[index + 2] = event.channel.blue[index + 2];
-
-                imageDataR.data[index + 3] = 255;
-                imageDataG.data[index + 3] = 255;
-                imageDataB.data[index + 3] = 255;
-
-            }
-        }
-        contextR.putImageData(imageDataR, 0, 0);
-        contextG.putImageData(imageDataG, 0, 0);
-        contextB.putImageData(imageDataB, 0, 0);
-
-    })
-    window.onload = function() {
-        // note here that &#39;camera&#39; is set to true, I believe this tells tracking.js to use
-        // the webcam.
-        tracking.track(&#39;#myVideo&#39;, myTracker, {
-            camera: true
-        });
-  }
-&lt;/script&gt;
-
-&lt;p&gt;&lt;style type=&#34;text/css&#34;&gt;
-    .outputchannel {
-        display: inline-block;
-    }
-&lt;/style&gt;&lt;/p&gt;
-</description>
-    </item>
     
     <item>
       <title>CV Hello World</title>
@@ -271,6 +176,101 @@ I have just started using it. So I don&amp;rsquo;t know much about its pros or c
         });
   }
 &lt;/script&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Extract RGB Channels</title>
+      <link>http://jatin3893.github.io/CV/ChannelSeparation/</link>
+      <pubDate>Wed, 24 Jun 2015 20:36:57 +0530</pubDate>
+      
+      <guid>http://jatin3893.github.io/CV/ChannelSeparation/</guid>
+      <description>&lt;script src=&#34;http://jatin3893.github.io/scripts/cv/tracking-min.js&#34;&gt;&lt;/script&gt;
+&lt;video id=&#34;myVideo&#34; width=&#34;200&#34; height=&#34;150&#34; preload autoplay loop muted&gt;&lt;/video&gt;&lt;br&gt;
+&lt;canvas id=&#34;channelR&#34; class = &#34;outputchannel&#34; width=&#34;200&#34; height=&#34;150&#34;&gt;&lt;/canvas&gt;
+&lt;canvas id=&#34;channelG&#34; class = &#34;outputchannel&#34; width=&#34;200&#34; height=&#34;150&#34;&gt;&lt;/canvas&gt;
+&lt;canvas id=&#34;channelB&#34; class = &#34;outputchannel&#34; width=&#34;200&#34; height=&#34;150&#34;&gt;&lt;/canvas&gt;
+
+&lt;script&gt;
+    canvasR = document.getElementById(&#39;channelR&#39;);
+    canvasG = document.getElementById(&#39;channelG&#39;);
+    canvasB = document.getElementById(&#39;channelB&#39;);
+
+    contextR = canvasR.getContext(&#39;2d&#39;);
+    contextG = canvasG.getContext(&#39;2d&#39;);
+    contextB = canvasB.getContext(&#39;2d&#39;);
+
+    imageDataR = contextR.createImageData(canvasR.width, canvasR.height);
+    imageDataG = contextG.createImageData(canvasG.width, canvasG.height);
+    imageDataB = contextB.createImageData(canvasB.width, canvasB.height);
+
+    tracking.MyTracker = function() {
+        tracking.MyTracker.base(this, &#39;constructor&#39;);
+    }
+    tracking.inherits(tracking.MyTracker, tracking.Tracker);
+
+    tracking.MyTracker.prototype.track = function(pixels, width, height) {
+        // Your tracking logic here
+        pixelsRed = new Uint8Array(pixels.length);
+        pixelsGreen = new Uint8Array(pixels.length);
+        pixelsBlue = new Uint8Array(pixels.length);
+
+        height = canvasR.height
+        width = canvasR.width
+        for (i = 0; i &lt; width; i++) {
+            for (j = 0; j &lt; height; j++) {
+                index = (i + j * width) * 4;
+                pixelsRed[index + 0] = pixels[index + 0];
+                pixelsGreen[index + 1] = pixels[index + 1];
+                pixelsBlue[index + 2] = pixels[index + 2];
+            }
+        }
+
+        this.emit(&#39;track&#39;, {
+            channel: {
+                red: pixelsRed,
+                green: pixelsGreen,
+                blue: pixelsBlue
+            }
+        });
+    }
+
+    var myTracker = new tracking.MyTracker()
+    myTracker.on(&#39;track&#39;, function(event) {
+        height = canvasR.height
+        width = canvasR.width
+        for (i = 0; i &lt; width; i++){
+            for (j = 0; j &lt; height; j++) {
+                index = (i + j * width) * 4;
+                imageDataR.data[index + 0] = event.channel.red[index + 0];
+                imageDataG.data[index + 1] = event.channel.green[index + 1];
+                imageDataB.data[index + 2] = event.channel.blue[index + 2];
+
+                imageDataR.data[index + 3] = 255;
+                imageDataG.data[index + 3] = 255;
+                imageDataB.data[index + 3] = 255;
+
+            }
+        }
+        contextR.putImageData(imageDataR, 0, 0);
+        contextG.putImageData(imageDataG, 0, 0);
+        contextB.putImageData(imageDataB, 0, 0);
+
+    })
+    window.onload = function() {
+        // note here that &#39;camera&#39; is set to true, I believe this tells tracking.js to use
+        // the webcam.
+        tracking.track(&#39;#myVideo&#39;, myTracker, {
+            camera: true
+        });
+  }
+&lt;/script&gt;
+
+&lt;p&gt;&lt;style type=&#34;text/css&#34;&gt;
+    .outputchannel {
+        display: inline-block;
+    }
+&lt;/style&gt;&lt;/p&gt;
 </description>
     </item>
     
