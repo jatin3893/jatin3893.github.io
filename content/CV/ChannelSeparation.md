@@ -3,9 +3,9 @@ Categories = ["CV", "Computer Vision"]
 Description = "Extract 3 channels from input RGBA image"
 Tags = ["Computer Vision", "CV", "OpenCV"]
 date = "2015-06-24T20:36:57+05:30"
-menu = "main"
+menu = "CV"
 title = "Extract RGB Channels"
-
+weight = 3
 +++
 
 <script src="/scripts/cv/tracking-min.js"></script>
