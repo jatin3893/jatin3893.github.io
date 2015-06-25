@@ -1,0 +1,55 @@
+---
+baseurl: "http://jatin3893.github.io/"
+title: "PJ's Pages"
+theme: "hyde"
+layoutdir: "layouts"
+contentdir: "content"
+layoutdir: "layouts"
+publishdir: "public"
+relativeURLs: true
+pygmentsUseClasses : true
+pygmentsStyle: "igor"
+
+footnotereturnlinkcontents: "↩"
+watch: true
+
+permalinks:
+    post: /:year/:month/:title/
+
+menu:
+    main:
+        -   Name: "Home"
+            Identifier: "main"
+            weight: 10
+            URL: "/"
+
+        -   Name: "Computer Graphics"
+            Identifier: "cg"
+            weight: 20
+            URL: "/CG/"
+
+        -   Name: "Computer Vision"
+            Identifier: "cv"
+            weight: 30
+            URL: "/CV/"
+
+        -   Name: "Audio Processing"
+            Identifier: "audio"
+            weight: 40
+            URL: "/Audio/"
+
+        -   Name: "Abhigyaan"
+            Identifier: "abhigyaan"
+            weight: 50
+            URL: "/Abhigyaan/"
+
+        -   Name: "About"
+            URL: "/about/"
+            weight: 60
+            Identifier: "about"
+
+taxonomies:
+    tag: "tags"
+    category: "categories"
+    series: "series"
+...
